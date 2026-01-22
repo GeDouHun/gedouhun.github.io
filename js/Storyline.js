@@ -1,16 +1,25 @@
 /*  -剧情页面js功能 
 	-json自动化注入剧情数据 */
+	//人名表
+	const nameMap = {
+		q: "琼",
+		dr: "邓饶",
+	  glt: "格雷塔",
+	  qsm: "奇士摩",
+	  sq: "萨奇",
+	};
 // 主线剧情数据
 const storyBookLore = {
+	//章节表
   chapters: {
-    ch1: { title: "第一章 军团", plannedTotal: 64 },
-	ch2: { title: "第二章 王朝", plannedTotal: 68 },
-	ch3: { title: "第三章 先锋", plannedTotal: 70 },
-	ch4: { title: "第四章 后果", plannedTotal: 69 },
-	ch5: { title: "第五章 军团要塞", plannedTotal: 75 },
-	ch6: { title: "第六章 暗影岛", plannedTotal: 62 },
-	ch7Ⅰ: { title: "第七章第Ⅰ部分 忘记过去", plannedTotal: 66 },
-	ch7Ⅱ: { title: "第七章第Ⅱ部分 展望未来", plannedTotal: 63 },
+    ch1: { title: "第Ⅰ章 军团", plannedTotal: 64 },
+	ch2: { title: "第Ⅱ章 王朝", plannedTotal: 68 },
+	ch3: { title: "第Ⅲ章 先锋", plannedTotal: 70 },
+	ch4: { title: "第Ⅳ章 后果", plannedTotal: 69 },
+	ch5: { title: "第Ⅴ章 暗影岛", plannedTotal: 75 },
+	ch6: { title: "第Ⅵ章 军团要塞", plannedTotal: 62 },
+	ch7Ⅰ: { title: "第Ⅶ章第Ⅰ部分 忘记过去", plannedTotal: 66 },
+	ch7Ⅱ: { title: "第Ⅶ章第Ⅱ部分 展望未来", plannedTotal: 63 },
 	qcⅠ: { title: "变形：琼的层面Ⅰ", plannedTotal: 63 },
 	qcⅡ: { title: "琼的层面Ⅱ", plannedTotal: 63 },
 	qcⅢ: { title: "琼的层面Ⅲ", plannedTotal: 63 },
@@ -21,23 +30,43 @@ const storyBookLore = {
 	mcⅡ: { title: "马库斯的层面Ⅱ", plannedTotal: 63 },
 	mcⅢ: { title: "马库斯的层面Ⅲ", plannedTotal: 63 },
   },
+  /*特殊标记规则
+	[-] = <br/>换行
+	+ : 需要和{}一起使用{+文本}等于文本单独一行显示加文本居中
+	{}= <span></span> 如：{文本}，等于给文本套上span标签
+	% : 需要和{}一起使用，等于在内部添加 style="color: var(--color-text-special)"
+	~ : 需要和{}一起使用，等于在内部添加 style="color: var(--color-text-fight)"
+	
+  */
   pages: [
-    { chapterId: "ch1", type: "normal", text: "萨奇：欢迎来到暗影小队。" },
-    { chapterId: "ch1", type: "normal", text: "奇士摩：准备好战斗了吗？" },
+	  //统一格式 { chapterId: "ch1",name:"", text: "" },
+    { chapterId: "ch1",name:"sq", text: "欢迎来到暗影小队。" },
+    { chapterId: "ch1",name:"qsm", text: "准备好战斗了吗？" },
+	{ chapterId: "ch1",text: "{+【倒下的兄弟】前的对话}{+战斗目标：打败邓饶士兵}" },
+	{ chapterId: "ch1",name:"dr", text: "军团兵的喽啰们！还有你，{%叛徒}，和他们一起走。你们已经太迟了！你的前哨已经{%被我们的士兵烧光了}。" },
+    { chapterId: "ch1",name:"dr", text: "我不会把我的时间浪费在你们这些{%失败者}身上。我的部队会{%把你们解决掉}" },
+	{ chapterId: "ch1",name:"", text: "{+如果在【倒下的兄弟】战斗完成前就点击BOSS}萨奇：我们在猎鹰峡谷{%拦截邓饶}，我们会让他付出代价。但是我们首先得{%解决掉他的士兵}。" },
   ],
 };
+ 
 // 冒险剧情数据
 const storyBookAdventure = {
   chapters: {
     a1: { title: "法则之战", plannedTotal: 46 },
 	a2: { title: "炽热血液", plannedTotal: 50 },
-	a3: { title: "饲喂恶魔", plannedTotal: 62 },
+	a3: { title: "知己知彼", plannedTotal: 62 },
 	a4: { title: "王朝之魂", plannedTotal: 62 },
-	a5: { title: "王朝遗产", plannedTotal: 62 },
+	a5: { title: "饲喂恶魔", plannedTotal: 62 },
   },
   pages: [
-    { chapterId: "a1", type: "normal", text: "【冒险剧情】" },
-    { chapterId: "a1", type: "normal", text: "【冒险剧情】" },
+	//统一格式： { chapterId: "a2", type: "normal",name: "", text: "" },
+    { chapterId: "a2",name: "glt", text: "奇士摩，这是你要的海姆长官的锤子。现在向我解释为什么需要他们。跟前几天被抓的那个北境佬有关系吗？" },
+    { chapterId: "a2",name: "qsm", text: "是的，审问者小姐。但是中士没有告诉我细节。也许他不想把北境佬交给让位者。嘿，你还把他的盔甲也带来了！" },
+	{ chapterId: "a2",name: "glt", text: "海姆长官现在是北境佬的朋友了吗？他打算让自己的职业生涯跌入谷底吗？" },
+	{ chapterId: "a2",name: "qsm", text: "朋友是言过其实。但我记得中士出生在北境。这不关我们的事。至于让位者，把你最坏的敌人交给他们就是······啊，说到魔鬼。看，又是纯粹论者。这些人肯定是坚持不懈··· ···" },
+	{ chapterId: "a2",text: "{【过去的消息】战斗}" },
+	{ chapterId: "a2",name: "", text: "" },
+	{ chapterId: "a2",name: "", text: "" },
   ],
 };
 // 填充数据的工具 
@@ -111,14 +140,14 @@ function StorylineEngine({ root, storagePrefix }) {
     }
   };
   this.renderStory = function () {
-	  /* 创建用于特殊文本颜色的符号规则 以后可补充
-		示例：【？@1】=<span class="text-special">？@1</span>
-		【+？@1】=<span class="text-special">？@1</span>
-	  */
+	  /* 创建用于特殊文本颜色的符号规则 以后可补充 */
 	this.renderText = function (text) {
 	  return text
-	    .replace(/【\+(.+?)】/g, "<span class=\"text-special\">$1</span>")
-	    .replace(/【(.+?)】/g, "<span>$1</span>");
+		.replace(/\[\-\]/g, "<br/>")//换行的符号规则
+		.replace(/\{\+(.+?)\}/g,"<span style=\"display:block;text-align:center\">$1</span>")//文本居中的符号规则
+		.replace(/\{\%(.+?)\}/g,"<span style=\"color: var(--color-text-special)\">$1</span>")//强调说明文本颜色的符号规则
+		.replace(/\{\~(.+?)\}/g,"<span style=\"color: var(--color-text-fight)\">$1</span>")//战斗中的对话文本颜色的符号规则
+	    .replace(/\{(.+?)\}/g, "<span>$1</span>");//添加span标签的符号规则
 	};
     const $box = this.$root.find(".story-pages").empty();
     if (!this.book || !this.book.pages) return;
@@ -127,7 +156,7 @@ function StorylineEngine({ root, storagePrefix }) {
       $box.append(`
         <section class="story-page" chapter-id="${p.chapterId}">
           <h4 class="chapter-title">${meta.title}</h4>
-          <p>${this.renderText(p.text)}</p>
+          <p>${this.renderText((p.name && nameMap[p.name] ? nameMap[p.name] + "：" : "") + p.text)}</p>
         </section>
       `);
     });
@@ -318,3 +347,53 @@ $(function () {
     storagePrefix: "adventure",
   }).init(storyBookAdventure);
 });
+
+// // ===== 移动端剧情切换 =====
+// $(function() {
+//     const switchTrigger = $('.switch-trigger');
+//     const switchBar = $('.mobile-switch-bar');
+//     const storyBox = $('.Story.text-main');
+//     const adventureBox = $('.Adventure.text-main');
+//     const mainTitle = $('.tit');
+
+//     if (switchTrigger.length && switchBar.length) {
+//         console.log('[switch] js reached');
+        
+//         // 点击箭头：展开 / 收起菜单
+//         switchTrigger.on('click', function(e) {
+//             e.stopPropagation();
+            
+//             if (window.innerWidth > 768) return;
+            
+//             const isOpen = switchBar.hasClass('is-open');
+//             switchBar.toggleClass('is-open', !isOpen);
+//         });
+
+//         // 点击 Story
+//         switchBar.find('.Story-button').on('click', function() {
+//             storyBox.css('display', 'flex');
+//             adventureBox.css('display', 'none');
+//             switchBar.removeClass('is-open');
+//             mainTitle.text('主线剧情');
+//             switchBar.find('.Story-button').addClass('is-active');
+//             switchBar.find('.Adventure-button').removeClass('is-active');
+//         });
+
+//         // 点击 Adventure
+//         switchBar.find('.Adventure-button').on('click', function() {
+//             storyBox.css('display', 'none');
+//             adventureBox.css('display', 'flex');
+//             switchBar.removeClass('is-open');
+//             mainTitle.text('冒险剧情');
+//             switchBar.find('.Adventure-button').addClass('is-active');
+//             switchBar.find('.Story-button').removeClass('is-active');
+//         });
+
+//         // 点击空白关闭
+//         $(document).on('click', function(e) {
+//             if (!$(e.target).closest('.switch-trigger, .mobile-switch-bar').length) {
+//                 switchBar.removeClass('is-open');
+//             }
+//         });
+//     }
+// });
